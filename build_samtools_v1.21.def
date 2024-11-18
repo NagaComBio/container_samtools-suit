@@ -1,0 +1,38 @@
+Bootstrap: docker
+
+From: alpine:latest
+
+%post
+  ## Updating...
+  apk add wget tar build-base zlib-dev bzip2-dev xz-dev ncurses-dev
+
+  ## Install htslib 1.21
+  wget https://github.com/samtools/htslib/releases/download/1.21/htslib-1.21.tar.bz2
+  tar -vxjf htslib-1.21.tar.bz2
+  cd htslib-1.21
+  ./configure
+  make
+  make install
+  cd ..
+
+  ## Install bcftools 1.21
+  wget https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2
+  tar -vxjf bcftools-1.21.tar.bz2
+  cd bcftools-1.21
+  ./configure
+  make
+  make install
+  cd ..
+
+  ## Install samtools 1.21
+  wget https://github.com/samtools/samtools/releases/download/1.21/samtools-1.21.tar.bz2
+  tar -vxjf samtools-1.21.tar.bz2
+  cd samtools-1.21
+  ./configure
+  make
+  make install
+
+  ## Export the paths
+  export HTSLIB_LIBRARY_DIR=/usr/local/lib
+  export HTSLIB_INCLUDE_DIR=/usr/local/include
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
