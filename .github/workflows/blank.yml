@@ -1,0 +1,35 @@
+name: Build and Push Singularity Image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: samtools_suit_v1.21
+  SINGULARITY_RECIPE: build_samtools_v1.21.def  # Change this if your recipe file has a different name
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Singularity
+        run: |
+          sudo apt-get update && sudo apt-get install -y singularity-container
+
+      - name: Build Singularity Image
+        run: |
+          singularity build ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
+
+      - name: Log in to GitHub Packages
+        run: echo "${{ secrets.ACTIONS_TOKEN }}" | singularity remote login --username $GITHUB_ACTOR --password-stdin oras://ghcr.io
+
+      - name: Push Singularity Image to GitHub Packages
+        run: |
+          singularity push ${{ env.IMAGE_NAME }}.sif oras://ghcr.io/${{ github.repository }}/singularity:${{ github.sha }}
