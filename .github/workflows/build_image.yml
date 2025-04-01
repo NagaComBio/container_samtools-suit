@@ -29,7 +29,7 @@ jobs:
           sudo singularity build ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
 
       - name: Log in to GitHub Packages
-        run: echo "${{ secrets.ACTIONS_TOKEN }}" | singularity remote login --username $GITHUB_ACTOR --password-stdin oras://ghcr.io
+        run: echo "${{ secrets.ACTIONS_TOKEN }}" | singularity remote login --username ${{ github.actor }}  --password-stdin oras://ghcr.io
 
       - name: Push Singularity Image to GitHub Packages
         run: |
