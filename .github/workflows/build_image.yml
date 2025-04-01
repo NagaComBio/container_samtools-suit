@@ -26,7 +26,7 @@ jobs:
 
       - name: Build Singularity Image
         run: |
-          singularity build --fakeroot ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
+          sudo singularity build --fakeroot ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
 
       - name: Log in to GitHub Packages
         run: echo "${{ secrets.ACTIONS_TOKEN }}" | singularity remote login --username $GITHUB_ACTOR --password-stdin oras://ghcr.io
