@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: samtools_suit_v1.21
-  SINGULARITY_RECIPE: build_samtools_v1.21.def  # Change this if your recipe file has a different name
+  VERSION: v1.21
+  IMAGE_NAME: samtools_suit
+  SINGULARITY_RECIPE: build_samtools  # Change this if your recipe file has a different name
 
 jobs:
   build-and-push:
@@ -30,10 +31,10 @@ jobs:
 
       - name: Build Singularity Image
         run: |
-          sudo singularity build ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
+          sudo singularity build ${{ env.IMAGE_NAME }}_${{ VERSION }}.sif ${{ env.SINGULARITY_RECIPE }}_${{ VERSION}}.def
 
       - name: Push Singularity Image to GitHub Packages
         env:
           ORAS_AUTH_HEADER: "Bearer ${{ secrets.ACTION_TOKEN }}"
         run: |
-          oras push ghcr.io/${{ github.repository_owner }}/singularity_samtools-suit/singularity:${{ github.sha }} ${{ env.IMAGE_NAME }}.sif
+          oras push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ VERSION }} ${{ env.IMAGE_NAME }}_${{ VERSION }}.sif
