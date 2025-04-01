@@ -13,7 +13,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       packages: write
 
     steps:
@@ -24,13 +24,16 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y singularity-container
 
+      - name: Install ORAS
+        run: |
+          curl -sSL https://github.com/oras-project/oras/releases/download/v0.13.0/oras_0.13.0_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin oras
+
       - name: Build Singularity Image
         run: |
           sudo singularity build ${{ env.IMAGE_NAME }}.sif ${{ env.SINGULARITY_RECIPE }}
 
-      - name: Log in to GitHub Packages
-        run: echo "${{ secrets.ACTIONS_TOKEN }}" | singularity remote login --username ${{ github.actor }}  --password-stdin oras://ghcr.io
-
       - name: Push Singularity Image to GitHub Packages
+        env:
+          ORAS_AUTH_HEADER: "Bearer ${{ secrets.ACTION_TOKEN }}"
         run: |
-          singularity push ${{ env.IMAGE_NAME }}.sif oras://ghcr.io/${{ github.repository }}/singularity:${{ github.sha }}
+          oras push ghcr.io/${{ github.repository }}/singularity:${{ github.sha }} ${{ env.IMAGE_NAME }}.sif
