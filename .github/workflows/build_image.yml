@@ -31,10 +31,10 @@ jobs:
 
       - name: Build Singularity Image
         run: |
-          sudo singularity build ${{ env.IMAGE_NAME }}_${{ VERSION }}.sif ${{ env.SINGULARITY_RECIPE }}_${{ VERSION}}.def
+          sudo singularity build ${{ env.IMAGE_NAME }}_${{ env.VERSION }}.sif ${{ env.SINGULARITY_RECIPE }}_${{ env.VERSION }}.def
 
       - name: Push Singularity Image to GitHub Packages
         env:
           ORAS_AUTH_HEADER: "Bearer ${{ secrets.ACTION_TOKEN }}"
         run: |
-          oras push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ VERSION }} ${{ env.IMAGE_NAME }}_${{ VERSION }}.sif
+          oras push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.IMAGE_NAME }}_${{ env.VERSION }}.sif
