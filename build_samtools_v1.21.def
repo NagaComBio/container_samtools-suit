@@ -1,5 +1,5 @@
-# Use the alpine:bookworm-slim image as the base
-FROM alpine:bookworm-slim
+# Use the debian:bookworm-slim image as the base
+FROM debian:bookworm-slim
 
 # Install necessary packages
 RUN apk add --no-cache wget tar build-base zlib-dev bzip2-dev xz-dev ncurses-dev
