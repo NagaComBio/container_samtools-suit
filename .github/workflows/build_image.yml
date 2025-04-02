@@ -25,7 +25,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           dockerfile: build_samtools_v1.21.def
-          image: nagacombio/container_samtools-suit
+          image: container_samtools-suit
           tags: latest, ${{ env.VERSION }}
 
           registry: ghcr.io
