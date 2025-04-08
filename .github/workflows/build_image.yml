@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: v1.21
+  VERSION: 1.9
   IMAGE_NAME: samtools_suit
 
 jobs:
@@ -24,9 +24,10 @@ jobs:
       - name: Build and Push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          dockerfile: build_samtools_v1.21.def
+          dockerfile: build_samtools.def
           image: container_samtools-suit
           tags: latest, ${{ env.VERSION }}
+          buildArgs: SUIT_VERSION=${{ env.VERSION }}  
 
           registry: ghcr.io
           username: ${{ github.actor }}
