@@ -1,0 +1,87 @@
+FROM debian:bookworm
+ARG SUIT_VERSION
+
+# Install necessary system packages
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    tar \
+    build-essential \
+    zlib1g-dev \
+    libbz2-dev \
+    xz-utils \
+    libncurses5-dev \
+    liblzma-dev \
+    perl \
+    cpanminus \
+    libexpat1-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libdb-dev \
+    libperl-dev \
+    libwww-perl \
+    libio-string-perl \
+    liberror-perl \
+    libset-scalar-perl \
+    libtest-memory-cycle-perl \
+    libxml-libxml-perl \
+    libxml-libxml-simple-perl \
+    libxml-sax-base-perl \
+    libxml-parser-perl \
+    libxml-twig-perl \
+    libhttp-daemon-perl \
+    libhttp-cookies-perl \
+    libwww-robotrules-perl \
+    liblwp-protocol-https-perl \
+    && apt-get clean
+
+# Install htslib
+RUN wget https://github.com/samtools/htslib/releases/download/$SUIT_VERSION/htslib-$SUIT_VERSION.tar.bz2 && \
+    tar -vxjf htslib-$SUIT_VERSION.tar.bz2 && \
+    cd htslib-$SUIT_VERSION && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf htslib-$SUIT_VERSION*
+
+# Install bcftools
+RUN wget https://github.com/samtools/bcftools/releases/download/$SUIT_VERSION/bcftools-$SUIT_VERSION.tar.bz2 && \
+    tar -vxjf bcftools-$SUIT_VERSION.tar.bz2 && \
+    cd bcftools-$SUIT_VERSION && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf bcftools-$SUIT_VERSION*
+
+# Install samtools
+RUN wget https://github.com/samtools/samtools/releases/download/$SUIT_VERSION/samtools-$SUIT_VERSION.tar.bz2 && \
+    tar -vxjf samtools-$SUIT_VERSION.tar.bz2 && \
+    cd samtools-$SUIT_VERSION && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf samtools-$SUIT_VERSION*
+
+# Export environment variables
+ENV HTSLIB_LIBRARY_DIR=/usr/local/lib \
+    HTSLIB_INCLUDE_DIR=/usr/local/include
+
+# Install Perl modules via cpanminus
+RUN cpanm --notest \
+    DBI \
+    Bio::SeqFeature::Lite \
+    XML::Parser::PerlSAX \
+    LWP::UserAgent \
+    Data::Stag \
+    Set::Scalar \
+    XML::LibXML::Reader \
+    Test::Memory::Cycle \
+    Error \
+    IO::String \
+    XML::LibXML \
+    XML::Twig \
+    Bio::DB::HTS
